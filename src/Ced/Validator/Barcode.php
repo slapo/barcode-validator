@@ -53,14 +53,15 @@ class Barcode
     public function getBarcode()
     {
         // For Walmart
-        if (($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) && strlen($this->barcode) < 14) {
+        /*if (($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) && strlen($this->barcode) < 14) {
             $zeros = 14 - strlen($this->barcode);
             $prefix = '';
             for ($i = $zeros; $i <= $zeros; $i++) {
                 $prefix .= '0';
             }
             return $prefix . $this->barcode;
-        }
+        }*/
+
         return $this->barcode;
     }
 
@@ -157,9 +158,9 @@ class Barcode
     public function getType()
     {
         // For Walmart
-        if ($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) {
+        /*if ($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) {
             return self::TYPE_GTIN;
-        }
+        }*/
         return $this->type;
     }
 
