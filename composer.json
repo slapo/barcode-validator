@@ -1,5 +1,5 @@
 {
-	"name": "milindsingh/php-barcodes",
+	"name": "milindsingh/validator",
 	"description": "A collection of PHP classes for managing barcodes.",
 	"license": "GPL-3.0+",
 	"require": {
