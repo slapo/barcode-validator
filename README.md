@@ -1,7 +1,7 @@
 # PHP Barcode
 A PHP class for checking EAN8, EAN13, UPC and GTIN barcodes are valid (based on check digit).
 
-[![Travis CI](https://img.shields.io/travis/milindsingh/php-barcodes.svg?maxAge=3600)](https://travis-ci.org/milindsingh/php-barcodes)
+[![Travis CI](https://travis-ci.org/milindsingh/php-barcodes.svg?branch=master)](https://travis-ci.org/milindsingh/php-barcodes)
 [![Packagist](https://img.shields.io/packagist/v/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
 [![Packagist](https://img.shields.io/packagist/dt/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
 [![Packagist](https://img.shields.io/packagist/dm/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
