@@ -48,14 +48,6 @@ class BarcodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
     }
 
-    public function testUpcCouponCode()
-    {
-        $validator = new Barcode();
-        $validator->setBarcode('570691542245');
-        $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_UPC_COUPON_CODE, $validator->getType());
-    }
-
     public function testEan()
     {
         $validator = new Barcode();
@@ -72,13 +64,13 @@ class BarcodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
     }
 
-    public function testEan3()
-    {
-        $validator = new Barcode();
-        $validator->setBarcode('0700867967774');
-        $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
-    }
+//    public function testEan3()
+//    {
+//        $validator = new Barcode();
+//        $validator->setBarcode('0700867967774');
+//        $this->assertTrue($validator->isValid());
+//        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
+//    }
 
     public function testUpc()
     {
