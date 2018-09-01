@@ -1,29 +1,29 @@
 # PHP Barcode
 A PHP class for checking EAN8, EAN13, UPC and GTIN barcodes are valid (based on check digit).
 
-[![Travis CI](https://travis-ci.org/milindsingh/php-barcodes.svg?branch=master)](https://travis-ci.org/milindsingh/php-barcodes)
-[![Packagist](https://img.shields.io/packagist/v/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
-[![Packagist](https://img.shields.io/packagist/dt/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
-[![Packagist](https://img.shields.io/packagist/dm/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
-[![Packagist](https://img.shields.io/packagist/l/milindsingh/php-barcodes.svg?maxAge=3600)](https://github.com/milindsingh/php-barcodes)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/milindsingh/php-barcodes/master/badge.svg)](https://travis-ci.org/milindsingh/php-barcodes)
+[![Travis CI](https://travis-ci.org/milindsingh/validator.svg?branch=master)](https://travis-ci.org/milindsingh/validator)
+[![Packagist](https://img.shields.io/packagist/v/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
+[![Packagist](https://img.shields.io/packagist/dt/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
+[![Packagist](https://img.shields.io/packagist/dm/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
+[![Packagist](https://img.shields.io/packagist/l/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
+[![PHP 7 ready](http://php7ready.timesplinter.ch/milindsingh/validator/master/badge.svg)](https://travis-ci.org/milindsingh/validator)
 
 
-https://packagist.org/packages/milindsingh/php-barcodes
+https://packagist.org/packages/milindsingh/validator
 
 _Note: This project currently does nothing other than have some validation functions. I expect to add additional functionality in the future._
 
 ## Installation (with composer)
 ```
-composer require milindsingh/php-barcodes
+composer require milindsingh/validator
 ```
 
 ## Usage
 ```php
 // Class instantation
 $barcode = '5060411950139';
-$bc_validator = new \Ced\Validator\Barcode($barcode);
-
+$validator = new \Ced\Validator\Barcode();
+$validator->setBarcode($barcode);
 
 // Check barcode is in valid format
 if ($bc_validator->isValid()) {
@@ -34,7 +34,7 @@ if ($bc_validator->isValid()) {
 
 
 // Get the barcode type
-echo 'Barcode is in format of ' . $bc_validator->getType();
+echo 'Barcode is in format of ' . $validator->getType();
 // Possible formats returned are:
 // (string) "GTIN" which equals constant \Ced\Validator\Barcode::TYPE_GTIN
 // (string) "EAN-8" which equals constant \Ced\Validator\Barcode::TYPE_EAN_8
@@ -45,11 +45,11 @@ echo 'Barcode is in format of ' . $bc_validator->getType();
 
 
 // Returns the barcode in GTIN-14 format
-$bc_validator->getGTIN14()
+$validator->getGTIN14()
 
 
 // Returns the barcode as entered
-$bc_validator->getBarcode()
+$validator->getBarcode()
 ```
 
 ## TODO:
