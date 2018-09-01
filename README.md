@@ -26,7 +26,7 @@ $validator = new \Ced\Validator\Barcode();
 $validator->setBarcode($barcode);
 
 // Check barcode is in valid format
-if ($bc_validator->isValid()) {
+if ($validator->isValid()) {
 	echo 'Valid :)';
 } else {
 	echo 'Invalid :(';
