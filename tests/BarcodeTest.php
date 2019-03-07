@@ -2,7 +2,7 @@
 
 namespace Ced\Barcodes\Tests;
 
-use \Ced\Validator\Barcode;
+use Ced\Validator\Barcode;
 
 // Nasty work around for testing over multiple PHPUnit versions
 if (!class_exists('\PHPUnit_Framework_TestCase') && class_exists('\PHPUnit\Framework\TestCase')) {
