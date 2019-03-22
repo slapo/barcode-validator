@@ -40,12 +40,13 @@ class Barcode
     public $type;
     public $gtin;
     public $valid;
-    // For Walmart
+
     public $allowedIdentifiers = array(
         self::TYPE_GTIN,
         self::TYPE_EAN,
         self::TYPE_EAN_8,
         self::TYPE_UPC,
+        self::TYPE_ASIN,
         self::TYPE_ISBN_10,
         self::TYPE_ISBN_13,
     );
