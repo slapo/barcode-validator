@@ -41,6 +41,8 @@ class Barcode
     public string $gtin;
     public bool $valid;
 
+    protected int $paddedBarcodeLength = 18;
+
     public array $allowedIdentifiers = [
         BarcodeType::TYPE_GTIN,
         BarcodeType::TYPE_EAN,
@@ -58,7 +60,7 @@ class Barcode
 
     public function setBarcode(string $barcode): self
     {
-        // Trims parsed string to remove unwanted whitespace or characters
+        // Trims parsed string to remove unwanted whitespace or characters.
         $this->barcode = trim((string)$barcode);
 
         if (preg_match('/[^0-9]/', $this->barcode)) {
@@ -76,7 +78,7 @@ class Barcode
     }
 
     /**
-     * Refactor this class later so that validation and detection aren't done as side effects.
+     * TODO: Refactor this class later so that validation and detection aren't done as side effects.
      */
     public function detectTypeAndValidate(string $barcode): self
     {
@@ -87,26 +89,25 @@ class Barcode
             return $this;
         }
 
-        $zeros = 18 - $length;
-        $this->gtin = str_repeat('0', $zeros) . $this->gtin;
+        $this->gtin = str_repeat('0', $this->paddedBarcodeLength - $length) . $this->gtin;
         $this->valid = true;
 
         if (!$this->checkDigitValid()) {
             $this->valid = false;
-        } elseif (substr($this->gtin, 5, 1) > 2) {
+        } elseif ((int)substr($this->gtin, 5, 1) > 2) {
             // EAN / JAN / EAN-13 code
             $this->type = BarcodeType::TYPE_EAN;
-        } elseif (substr($this->gtin, 6, 1) == 0 && substr($this->gtin, 0, 10) == 0) {
+        } elseif ((int)substr($this->gtin, 6, 1) === 0 && (int)substr($this->gtin, 0, 10) === 0) {
             // EAN-8 / GTIN-8 code
             $this->type = BarcodeType::TYPE_EAN_8;
-        } elseif (substr($this->gtin, 5, 1) <= 0) {
+        } elseif ((int)substr($this->gtin, 5, 1) <= 0) {
             // UPC / UCC-12 GTIN-12 code
-            if (substr($this->gtin, 6, 1) == 5) {
+            if ((int)substr($this->gtin, 6, 1) === 5) {
                 $this->type = BarcodeType::TYPE_UPC_COUPON_CODE;
             } else {
                 $this->type = BarcodeType::TYPE_UPC;
             }
-        } elseif (substr($this->gtin, 0, 6) == 0) {
+        } elseif ((int)substr($this->gtin, 0, 6) === 0) {
             // GTIN-14 code
             $this->type = BarcodeType::TYPE_GTIN;
         } else {
@@ -121,11 +122,11 @@ class Barcode
     {
         $regex = '/\b(?:ISBN(?:: ?| ))?((?:97[89])?\d{9}[\dx])\b/i';
         if (preg_match($regex, str_replace('-', '', $barcode), $matches)) {
+            $this->valid = true;
+
             if (strlen($matches[1]) === 10) {
-                $this->valid = true;
                 $this->type = BarcodeType::TYPE_ISBN_10;
             } else {
-                $this->valid = true;
                 $this->type = BarcodeType::TYPE_ISBN_13;
             }
 
@@ -151,17 +152,13 @@ class Barcode
 
     public function checkDigitValid(): bool
     {
-        $calculation = 0;
+        $calculated = 0;
 
         for ($i = 0; $i < (strlen($this->gtin) - 1); $i++) {
-            $calculation += $i % 2 ? $this->gtin[$i] * 1 : $this->gtin[$i] * 3;
+            $calculated += $i % 2 ? $this->gtin[$i] * 1 : $this->gtin[$i] * 3;
         }
 
-        if (substr(10 - (substr($calculation, -1)), -1) != substr($this->gtin, -1)) {
-            return false;
-        } else {
-            return true;
-        }
+        return substr(10 - (substr($calculated, -1)), -1) === substr($this->gtin, -1);
     }
 
     public function getType(): ?string
