@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ced\Validator;
 
 /**
@@ -163,10 +165,12 @@ class Barcode
         $calculated = 0;
 
         for ($i = 0; $i < (strlen($this->gtin) - 1); $i++) {
-            $calculated += $i % 2 ? $this->gtin[$i] * 1 : $this->gtin[$i] * 3;
+            $relevantPart = (int)$this->gtin[$i];
+            $calculated += $i % 2 ? $relevantPart : ($relevantPart * 3);
         }
 
-        return substr(10 - (substr($calculated, -1)), -1) === substr($this->gtin, -1);
+        return substr((string)(10 - (int)(substr((string)$calculated, -1))), -1)
+            === substr($this->gtin, -1);
     }
 
     public function getType(): ?string
