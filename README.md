@@ -6,12 +6,11 @@ A PHP class for checking EAN8, EAN13, UPC and GTIN barcodes are valid (based on 
 [![Packagist](https://img.shields.io/packagist/dt/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
 [![Packagist](https://img.shields.io/packagist/dm/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
 [![Packagist](https://img.shields.io/packagist/l/milindsingh/validator.svg?maxAge=3600)](https://github.com/milindsingh/validator)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/milindsingh/validator/master/badge.svg)](https://travis-ci.org/milindsingh/validator)
-
 
 https://packagist.org/packages/milindsingh/validator
 
-_Note: This project currently does nothing other than have some validation functions. I expect to add additional functionality in the future._
+## Overview
+This project currently does nothing other than have some validation functions. I expect to add additional functionality in the future.
 
 ## Installation (with composer)
 ```
