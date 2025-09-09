@@ -27,13 +27,21 @@ namespace Ced\Validator;
  */
 class Barcode
 {
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_ASIN = BarcodeType::TYPE_ASIN;
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_EAN = BarcodeType::TYPE_EAN; // 13 digits
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_EAN_8 = BarcodeType::TYPE_EAN_8;
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_GTIN = BarcodeType::TYPE_GTIN; // 14 digits
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_ISBN_10 = BarcodeType::TYPE_ISBN_10; // 10 digits excluding dashes
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_ISBN_13 = BarcodeType::TYPE_ISBN_13; // 13 digits excluding dashes
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_UPC = BarcodeType::TYPE_UPC; // 12 digits
+    /** @deprecated Use same-name equivalent in Ced\Validator\BarcodeType */
     public const TYPE_UPC_COUPON_CODE = BarcodeType::TYPE_UPC_COUPON_CODE;
 
     public string $barcode;

@@ -36,12 +36,12 @@ if ($validator->isValid()) {
 // Get the barcode type
 echo 'Barcode is in format of ' . $validator->getType();
 // Possible formats returned are:
-// (string) "GTIN" which equals constant \Ced\Validator\Barcode::TYPE_GTIN
-// (string) "EAN-8" which equals constant \Ced\Validator\Barcode::TYPE_EAN_8
-// (string) "EAN" which equals constant \Ced\Validator\Barcode::TYPE_EAN
-// (string) "EAN Restricted" which equals constant \Ced\Validator\Barcode::TYPE_EAN_RESTRICTED
-// (string) "UPC" which equals constant \Ced\Validator\Barcode::TYPE_UPC
-// (string) "UPC Coupon Code" which equals constant \Ced\Validator\Barcode::TYPE_UPC_COUPON_CODE
+// (string) "GTIN" which equals constant \Ced\Validator\BarcodeType::TYPE_GTIN
+// (string) "EAN-8" which equals constant \Ced\Validator\BarcodeType::TYPE_EAN_8
+// (string) "EAN" which equals constant \Ced\Validator\BarcodeType::TYPE_EAN
+// (string) "EAN Restricted" which equals constant \Ced\Validator\BarcodeType::TYPE_EAN_RESTRICTED
+// (string) "UPC" which equals constant \Ced\Validator\BarcodeType::TYPE_UPC
+// (string) "UPC Coupon Code" which equals constant \Ced\Validator\BarcodeType::TYPE_UPC_COUPON_CODE
 
 
 // Returns the barcode in GTIN-14 format
