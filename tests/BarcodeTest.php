@@ -3,65 +3,64 @@
 namespace Ced\Barcodes\Tests;
 
 use Ced\Validator\Barcode;
+use Ced\Validator\BarcodeType;
+use PHPUnit\Framework\TestCase;
 
-// Nasty work around for testing over multiple PHPUnit versions
-if (!class_exists('\PHPUnit_Framework_TestCase') && class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
-}
-
-class BarcodeTest extends \PHPUnit_Framework_TestCase
+class BarcodeTest extends TestCase
 {
-
-    public function testInit()
+    private function getTestedInstanceForBarcode(string $barcode): Barcode
     {
-        $validator = new Barcode();
-        $validator->setBarcode('12345123');
-        $this->assertInstanceOf('\Ced\Validator\Barcode', $validator);
+        return (new Barcode())->setBarcode($barcode);
     }
 
-    public function testInvalid()
+    public function testInit(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('string123');
-        $this->assertFalse($validator->isValid());
+        $this->assertInstanceOf(
+            Barcode::class,
+            $this->getTestedInstanceForBarcode('12345123'),
+        );
     }
 
-    public function testInvalidLooksLikeBarcode()
+    public function testInvalid(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('5060411950138');
-        $this->assertFalse($validator->isValid());
+        $this->assertFalse(
+            $this->getTestedInstanceForBarcode('string123')->isValid()
+        );
     }
 
-    public function testValid()
+    public function testInvalidLooksLikeBarcode(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('001303050100');
-        $this->assertFalse($validator->isValid());
+        $this->assertFalse(
+            $this->getTestedInstanceForBarcode('5060411950138')->isValid()
+        );
     }
 
-    public function testEanRestricted()
+    public function testValid(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('2100000030019');
+        $this->assertFalse(
+            $this->getTestedInstanceForBarcode('001303050100')->isValid()
+        );
+    }
+
+    public function testEanRestricted(): void
+    {
+        $validator = $this->getTestedInstanceForBarcode('2100000030019');
         $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
+        $this->assertSame(BarcodeType::TYPE_EAN, $validator->getType());
     }
 
-    public function testEan()
+    public function testEan(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('8838108476586');
+        $validator = $this->getTestedInstanceForBarcode('8838108476586');
         $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
+        $this->assertSame(BarcodeType::TYPE_EAN, $validator->getType());
     }
 
-    public function testEan2()
+    public function testEan2(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('5060411950139');
+        $validator = $this->getTestedInstanceForBarcode('5060411950139');
         $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
+        $this->assertSame(BarcodeType::TYPE_EAN, $validator->getType());
     }
 
 //    public function testEan3()
@@ -72,11 +71,10 @@ class BarcodeTest extends \PHPUnit_Framework_TestCase
 //        $this->assertSame(Barcode::TYPE_EAN, $validator->getType());
 //    }
 
-    public function testUpc()
+    public function testUpc(): void
     {
-        $validator = new Barcode();
-        $validator->setBarcode('700867967774');
+        $validator = $this->getTestedInstanceForBarcode('700867967774');
         $this->assertTrue($validator->isValid());
-        $this->assertSame(Barcode::TYPE_UPC, $validator->getType());
+        $this->assertSame(BarcodeType::TYPE_UPC, $validator->getType());
     }
 }

@@ -7,12 +7,10 @@ namespace Ced\Validator;
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
@@ -24,131 +22,141 @@ namespace Ced\Validator;
 
 /**
  * Class Barcode
+ *
  * @package Ced\Validator
  */
 class Barcode
 {
-    const TYPE_GTIN = 'GTIN'; // 14 digits
-    const TYPE_EAN = 'EAN'; // 13 digits
-    const TYPE_UPC = 'UPC'; // 12 digits
-    const TYPE_ISBN_10 = 'ISBN'; // 10 digits excluding dashes
-    const TYPE_ISBN_13 = 'ISBN'; // 13 digits excluding dashes
-    const TYPE_EAN_8 = 'EAN-8';
-    const TYPE_ASIN = 'ASIN';
-    const TYPE_UPC_COUPON_CODE = 'UPC Coupon Code';
-    public $barcode;
-    public $type;
-    public $gtin;
-    public $valid;
+    public const TYPE_ASIN = BarcodeType::TYPE_ASIN;
+    public const TYPE_EAN = BarcodeType::TYPE_EAN; // 13 digits
+    public const TYPE_EAN_8 = BarcodeType::TYPE_EAN_8;
+    public const TYPE_GTIN = BarcodeType::TYPE_GTIN; // 14 digits
+    public const TYPE_ISBN_10 = BarcodeType::TYPE_ISBN_10; // 10 digits excluding dashes
+    public const TYPE_ISBN_13 = BarcodeType::TYPE_ISBN_13; // 13 digits excluding dashes
+    public const TYPE_UPC = BarcodeType::TYPE_UPC; // 12 digits
+    public const TYPE_UPC_COUPON_CODE = BarcodeType::TYPE_UPC_COUPON_CODE;
 
-    public $allowedIdentifiers = array(
-        self::TYPE_GTIN,
-        self::TYPE_EAN,
-        self::TYPE_EAN_8,
-        self::TYPE_UPC,
-        self::TYPE_ASIN,
-        self::TYPE_ISBN_10,
-        self::TYPE_ISBN_13,
-    );
+    public string $barcode;
+    public ?string $type = null;
+    public string $gtin;
+    public bool $valid;
 
-    public function getBarcode()
+    public array $allowedIdentifiers = [
+        BarcodeType::TYPE_GTIN,
+        BarcodeType::TYPE_EAN,
+        BarcodeType::TYPE_EAN_8,
+        BarcodeType::TYPE_UPC,
+        BarcodeType::TYPE_ASIN,
+        BarcodeType::TYPE_ISBN_10,
+        BarcodeType::TYPE_ISBN_13,
+    ];
+
+    public function getBarcode(): string
     {
-        // For Walmart
-        /*if (($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) && strlen($this->barcode) < 14) {
-            $zeros = 14 - strlen($this->barcode);
-            $prefix = '';
-            for ($i = $zeros; $i <= $zeros; $i++) {
-                $prefix .= '0';
-            }
-            return $prefix . $this->barcode;
-        }*/
-
         return $this->barcode;
     }
 
-    public function setBarcode($barcode)
+    public function setBarcode(string $barcode): self
     {
-        $this->barcode = (string)$barcode;
         // Trims parsed string to remove unwanted whitespace or characters
-        $this->barcode = trim($this->barcode);
+        $this->barcode = trim((string)$barcode);
+
         if (preg_match('/[^0-9]/', $this->barcode)) {
-            $isbn = $this->isIsbn($this->barcode);
-            if ($isbn == false) {
-                $asin = $this->isAsin($this->barcode);
+            if (false === $this->isIsbn($this->barcode)) {
+                $this->isAsin($this->barcode);
             }
-        } else {
-            $this->gtin = $this->barcode;
-            $length = strlen($this->gtin);
-            if (($length > 11 && $length <= 14) || $length == 8) {
-                $zeros = 18 - $length;
-                $length = null;
-                $fill = '';
-                for ($i = 0; $i < $zeros; $i++) {
-                    $fill .= '0';
-                }
-                $this->gtin = $fill . $this->gtin;
-                $fill = null;
-                $this->valid = true;
-                if (!$this->checkDigitValid()) {
-                    $this->valid = false;
-                } elseif (substr($this->gtin, 5, 1) > 2) {
-                    // EAN / JAN / EAN-13 code
-                    $this->type = self::TYPE_EAN;
-                } elseif (substr($this->gtin, 6, 1) == 0 && substr($this->gtin, 0, 10) == 0) {
-                    // EAN-8 / GTIN-8 code
-                    $this->type = self::TYPE_EAN_8;
-                } elseif (substr($this->gtin, 5, 1) <= 0) {
-                    // UPC / UCC-12 GTIN-12 code
-                    if (substr($this->gtin, 6, 1) == 5) {
-                        $this->type = self::TYPE_UPC_COUPON_CODE;
-                    } else {
-                        $this->type = self::TYPE_UPC;
-                    }
-                } elseif (substr($this->gtin, 0, 6) == 0) {
-                    // GTIN-14 code
-                    $this->type = self::TYPE_GTIN;
-                } else {
-                    // EAN code
-                    $this->type = self::TYPE_EAN;
-                }
-            }
+
+            return $this;
         }
+
+        $this->gtin = $this->barcode;
+        $this->detectTypeAndValidate($this->barcode);
+
         return $this;
     }
 
-    public function isIsbn($barcode)
+    /**
+     * Refactor this class later so that validation and detection aren't done as side effects.
+     */
+    public function detectTypeAndValidate(string $barcode): self
+    {
+        $length = strlen($this->gtin);
+        $hasRequiredLength = ($length > 11 && $length <= 14) || $length == 8;
+
+        if (!$hasRequiredLength) {
+            return $this;
+        }
+
+        $zeros = 18 - $length;
+        $this->gtin = str_repeat('0', $zeros) . $this->gtin;
+        $this->valid = true;
+
+        if (!$this->checkDigitValid()) {
+            $this->valid = false;
+        } elseif (substr($this->gtin, 5, 1) > 2) {
+            // EAN / JAN / EAN-13 code
+            $this->type = BarcodeType::TYPE_EAN;
+        } elseif (substr($this->gtin, 6, 1) == 0 && substr($this->gtin, 0, 10) == 0) {
+            // EAN-8 / GTIN-8 code
+            $this->type = BarcodeType::TYPE_EAN_8;
+        } elseif (substr($this->gtin, 5, 1) <= 0) {
+            // UPC / UCC-12 GTIN-12 code
+            if (substr($this->gtin, 6, 1) == 5) {
+                $this->type = BarcodeType::TYPE_UPC_COUPON_CODE;
+            } else {
+                $this->type = BarcodeType::TYPE_UPC;
+            }
+        } elseif (substr($this->gtin, 0, 6) == 0) {
+            // GTIN-14 code
+            $this->type = BarcodeType::TYPE_GTIN;
+        } else {
+            // EAN code
+            $this->type = BarcodeType::TYPE_EAN;
+        }
+
+        return $this;
+    }
+
+    public function isIsbn(string $barcode): bool
     {
         $regex = '/\b(?:ISBN(?:: ?| ))?((?:97[89])?\d{9}[\dx])\b/i';
         if (preg_match($regex, str_replace('-', '', $barcode), $matches)) {
             if (strlen($matches[1]) === 10) {
                 $this->valid = true;
-                $this->type = self::TYPE_ISBN_10;
+                $this->type = BarcodeType::TYPE_ISBN_10;
             } else {
                 $this->valid = true;
-                $this->type = self::TYPE_ISBN_13;
+                $this->type = BarcodeType::TYPE_ISBN_13;
             }
+
             return true;
         }
+
         return false; // No valid ISBN found
     }
 
-    public function isAsin($barcode)
+    public function isAsin(string $barcode): bool
     {
         $ptn = "/B[0-9]{2}[0-9A-Z]{7}|[0-9]{9}(X|0-9])/";
+
         if (preg_match($ptn, $barcode, $matches)) {
             $this->valid = true;
-            $this->type = self::TYPE_ASIN;
+            $this->type = BarcodeType::TYPE_ASIN;
+
             return true;
         }
+
         return false;
     }
 
-    public function checkDigitValid()
+    public function checkDigitValid(): bool
     {
         $calculation = 0;
+
         for ($i = 0; $i < (strlen($this->gtin) - 1); $i++) {
             $calculation += $i % 2 ? $this->gtin[$i] * 1 : $this->gtin[$i] * 3;
         }
+
         if (substr(10 - (substr($calculation, -1)), -1) != substr($this->gtin, -1)) {
             return false;
         } else {
@@ -156,26 +164,28 @@ class Barcode
         }
     }
 
-    public function getType()
+    public function getType(): ?string
     {
-        // For Walmart
-        /*if ($this->type == self::TYPE_EAN || $this->type == self::TYPE_EAN_8) {
-            return self::TYPE_GTIN;
-        }*/
         return $this->type;
     }
 
-    public function getGTIN14()
+    public function getGTIN14(): string
     {
         return (string)substr($this->gtin, -14);
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
+        if (empty($this->type)) {
+            return false;
+        }
+
+        // TODO: This should be handled by injecting a list of valid types, so everyone can set their own.
         // For Walmart
         if (!in_array($this->type, $this->allowedIdentifiers)) {
             $this->valid = false;
         }
+
         return $this->valid;
     }
 }
